@@ -1,0 +1,36 @@
+
+Problems on Implicit Cursor:
+ 
+
+1.Procedure accepting designation and increment percentage and updating the salaries of employees.Finally display,How many number of employees Updated?
+
+
+Solution:-
+         (i) Create table empcp
+           as
+           select empno,ename,sal,job,hiredate,comm,deptno from emp;
+
+
+         
+#######################################################################################################################################
+
+         (ii) Create or Replace procedure proc_sal_update(vjob in emp.job%type,incr in int)
+               is
+               Begin
+                    update empcp
+                    set sal=sal+((sal*incr)/100)
+                    where job=vjob;
+                    if (sql%found) then
+                    dbms_output.put_line('Updation is Successful');
+                    dbms_output.put_line('Number of '||vjob||'s updated:'
+                    ||SQL%ROWCOUNT);
+
+                else
+                     dbms_output.put_line('Updation Failed');
+                     dbms_output.put_line('Number of '||vjob||'s updated:'
+                     ||SQL%ROWCOUNT);
+
+                end if;
+
+                End proc_sal_update;
+                / 

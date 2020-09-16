@@ -1,0 +1,375 @@
+			pl_sql1
+---------------------------------------------------------------------------------
+1:-  declare
+ string varchar2(10) :='&string';
+ len number(2):=0;
+ begin
+  len:=length(string);
+ while(len>0)
+ loop
+ dbms_output.put(substr(string,len,1));
+ len:=len-1;
+ end loop;
+ dbms_output.put_line(' ');
+ end;
+---------------------------------------------------------------------------------
+2:-   declare
+  		a number (3):=0;
+		b number(3):=1;
+		c number(3):=0;
+		n number(2):=&n;
+		x number(2) :=0;
+  begin
+  	dbms_output.put_line(a);
+  	dbms_output.put_line(b);
+ 	for x in 1..n-2
+  	loop
+  		c:=a+b;
+  		dbms_output.put_line(c);
+  		a:=b;
+  		b:=c;
+  	end loop;
+  	dbms_output.put_line('The '|| n ||'th Fibonacci term is '||c);
+ end;
+----------------------------------------------------------------------------------------------
+3:- declare
+x number(2):=1;
+y number(2):=1;
+n number(2):=&number_of_lines;
+begin
+while (x<=n)
+loop
+      while (y<=x)
+      loop
+	dbms_output.put(x);
+	y:=y+1;
+      end loop;
+dbms_output.put_line(' ');
+x:=x+1;
+y:=1;
+end loop;
+end;
+----------------------------------------------------------------------------------------------
+4:-  declare
+    num1 number(3):=&num1;
+    num2 number(3):=&num2;
+    total number(4);
+ begin
+    proc1(num1,num2,total);
+    dbms_output.put_line(total);
+    dbms_output.put_line(f1(num1,num2));
+ end;
+-------------------------------
+proc1:-  create  or replace procedure proc1(no1 in number,no2 in number,tot out number)
+ is
+ begin
+   tot:=no1+no2;
+ end;
+-----------------------------------
+f1:-  create  or replace function f1(no1 in number,no2 in number)
+  return number
+ is
+tot number(4);
+ begin
+ tot:= no1+no2;
+ return (tot);
+ end;
+-----------------------------------------------------------------------------------------------
+5:-
+-----------------------------------------------------------------------------------------------
+6:- declare
+   cursor c1 is select deptno from dept2;
+   depno dept2.deptno%type:=&depno;
+   dnam dept2.dname%type:='&dnam';
+   dloc dept2.loc%type:='&dloc';
+   f_deptno dept2.deptno%type;
+   flag number(1):=0;
+begin
+   open c1;
+   loop
+   fetch c1 into f_deptno;
+   exit when c1%notfound;
+   if f_deptno=depno then
+           flag:=1;
+           exit;
+   end if;
+   end loop;
+   if flag=1 then
+           delete from dept2 where deptno=depno ;
+           insert into dept2 values(depno,dnam,dloc);
+   else
+           insert into dept2 values(depno,dnam,dloc);
+   end if;
+close c1;
+end;
+-----------------------------------------------------------------------------------------------
+7:-  declare
+    depno emp2.deptno%type:=&depno;
+    f_deptno emp2.deptno%type;
+    f_empno emp2.empno%type;
+    cursor c1 is select empno,deptno from emp2;
+    cntr number(2):=0;
+    no_dept exception;                     
+ begin
+    if depno not in(10,20,30,40) then
+           raise no_dept;  
+     end if;
+    open c1;
+    loop
+    fetch c1 into f_empno,f_deptno;
+    exit when c1%notfound;
+    if f_deptno=depno then
+            delete from emp2 where empno=f_empno;
+            cntr:=cntr+1;
+    end if;
+    end loop;
+    dbms_output.put_line('The no of rows deleted ='||cntr);
+exception
+   when no_dept then
+    dbms_output.put_line('This is an invalid dept no.');
+ end;
+-----------------------------------------------------------------------------------------------
+8:- declare
+    cursor c1 is select * from emp2;
+    row c1%rowtype;
+ begin
+    open c1;
+    loop
+    fetch c1 into row;
+    exit when c1%notfound;
+    if c1%rowcount=5 then
+   dbms_output.put_line('Empno Ename   Salary  Mgr Hiredate Deptno ');
+   dbms_output.put_line(row.empno||' '|| row.ename||' '||row.sal||' '|| row.mgr||' '|| row.hiredate);
+    end if;
+    end loop;
+ end;
+-----------------------------------------------------------------------------------------------
+9:-  declare
+    cursor c1 is select * from emp2 ;
+    row c1%rowtype;
+ begin
+    open c1;
+    loop
+    fetch c1 into row;
+    exit when c1%notfound;
+    if c1%rowcount=5 then
+   delete from emp2 where empno=row.empno;
+    end if;
+    end loop;
+ end;
+-----------------------------------------------------------------------------------------------
+10:-  declare
+    cursor c1 is select sal, hiredate,empno,nvl(comm,0) from emp2;
+    apoint emp2.hiredate%type;
+    salary emp2.sal%type;
+    commi emp2.comm%type;
+    emno emp2.empno%type;
+    exp number(4);
+ begin
+    open c1;
+    loop
+    fetch c1 into salary,apoint,emno,commi;
+    exit when c1%notfound;
+    exp:=months_between(apoint,sysdate);
+    if exp<=48 and exp>24 then
+            update emp2 set sal=salary+500,comm=commi+100 where empno=emno;
+    elsif exp<=96 and exp>48 then
+            update emp2 set sal=salary+100 ,comm=commi+500where empno=emno;
+    else
+   if exp>96 then
+    update emp2 set sal=salary+1500,comm=commi+1000 where empno=emno;
+   end if;
+    end if;
+    end loop;
+ end;
+-----------------------------------------------------------------------------------------------
+11:-  declare
+    cursor c1 is select * from emp2;
+    row c1%rowtype;
+ begin
+    open c1;
+    loop
+    fetch c1 into row;
+    exit when c1%notfound;
+    if mod(c1%rowcount,2)=1 then
+    dbms_output.put_line (row.empno||' '||row.ename||' '||row.deptno||' '||row.mgr||' '||row.sal);
+    end if;
+    end loop;
+ end;
+-----------------------------------------------------------------------------------------------
+12:-  declare
+    cursor c1 is select * from emp2;
+    row c1%rowtype;
+    my_excep exception;
+   pragma exception_init(my_excep,-06511);
+ begin
+    open c1;
+    loop
+    fetch c1 into row;
+    exit when c1%notfound;
+    if mod(c1%rowcount,2)=1 then
+    dbms_output.put_line (row.empno||' '||row.ename||' '||row.deptno||' '||row.mgr||' '||row.sal);
+    open c1;
+    end if;
+    end loop;
+exception
+   when my_excep then
+       dbms_output.put_line ('Cursor already open');
+ end;
+----------------------------------------------------------------------------------------------
+13:- 
+declare
+      cursor cur is select id from t a where 2 <
+   (
+          select count(id)
+            from t
+              where id = a.id
+    ) for update ;
+      rec cur%ROWTYPE ;
+      ctr number(2) := 0 ;
+    begin
+      open cur ;
+      loop
+        fetch cur into rec ;
+   exit when cur%NOTFOUND ;
+   delete from t where current of cur ;
+   ctr := ctr + 1 ;
+ end loop ;
+ close cur ;
+ dbms_output.put_line('  Total ' || ctr || ' record(s) deleted !') ;
+    end ;
+----------------------------------------------------------------------------------------------
+14:-  declare
+    cursor c1 is select * from emp2;
+    row c1%rowtype;
+    my_excep exception;
+   pragma exception_init(my_excep,-06511);
+ begin
+    open c1;
+    loop
+    fetch c1 into row;
+    exit when c1%notfound;
+    if mod(c1%rowcount,2)=1 then
+    dbms_output.put_line (row.empno||' '||row.ename||' '||row.deptno||' '||row.mgr||' '||row.sal);
+    open c1;
+    end if;
+    end loop;
+exception
+   when my_excep then
+       dbms_output.put_line ('Cursor already open');
+ end;
+-----------------------------------------------------------------------------------------------
+15:- declare
+	cursor c1 is select * from empp order by sal for update;
+	cursor c2 is select * from empp order by sal for update;
+	cursor c3 is select * from empp order by sal for update;
+	i number := 0;
+	j number := 0;
+	k number := 0;
+begin
+	for i in 1 .. 3
+		loop
+		for j in 1 ..2
+		   loop
+		   for k in 1..1
+		   loop
+			dbms_output.put_line(c3.sal);
+		   end loop;
+		dbms_output.put_line(rec2.sal);
+		end loop;
+	dbms_output.put_line(rec1.sal);
+        end loop;
+end;
+----------------------------------------------------------------------------------------------
+16:-  declare
+   cursor c1 is select ename from emp2 where empno between 7500 and 
+   empname emp2.ename%type;
+    no_emp exception;
+begin
+   open c1;
+   loop
+   fetch c1 into empname;
+   if c1%notfound and c1%rowcount=1 then
+           raise no_emp;
+   end if;
+   exit when c1%notfound;
+   dbms_output.put_line(empname);
+   end loop;
+   close c1;
+exception
+   when no_emp then
+   dbms_output.put_line('No employee between 7500 and 7600');
+   close c1;
+end;
+----------------------------------------------------------------------------------------------
+17:-  declare
+    year number(4):=&&year;
+    dt1 varchar2(9);
+    ctr number(2):=0;
+    ctr1 number(2):=0;
+ begin
+    while (ctr<=11)
+    loop
+    dt1:=to_char(add_months(to_date('01-Jan-&year','dd-Mon-yyyy'),ctr),'day');
+    if dt1 like 'su%' then
+    ctr1:=ctr1+1;
+    end if;
+    ctr:=ctr+1;
+    end loop;
+    dbms_output.put_line('Total sundays on first day of month in year '||&year||'  are '||ctr1);
+ end;
+----------------------------------------------------------------------------------------------
+18:-  declare
+   empname emp2.ename%type;
+   no_data exception;
+   pragma exception_init(no_data,+100);
+ begin
+    select ename into empname from emp2 where empno=1234;
+exception
+   when no_data then
+   dbms_output.put_line('No data found for following condition');
+end;
+-----------------------------------------------------------------------------------------------
+19:- DECLARE 
+CURSOR_ID NUMBER;
+CREATESTR VARCHAR2(50);
+NUMROW INTEGER;
+BEGIN 
+CURSOR_ID := DBMS_SQL.OPEN_CURSOR;
+CREATESTR := 'CREATE TABLE JAM AS SELECT * FROM EMP';  
+DBMS_SQL.PARSE(CURSOR_ID,CREATESTR,DBMS_SQL.V7);
+NUMROW := DBMS_SQL.EXECUTE(CURSOR_ID);
+EXCEPTION
+WHEN OTHERS THEN
+IF SQLCODE != -955 THEN
+	RAISE;
+ELSE
+DBMS_OUTPUT.PUT_LINE('TABLE ALREADY EXISTS....');
+END IF;
+DBMS_SQL.CLOSE_CURSOR(CURSOR_ID);
+END;
+----------------------------------------------------------------------------------------------
+20:-  declare
+	cursor c1 is select * from emp2 where comm is not null;
+	cursor c2 is select * from emp2 where comm is null;
+	row1 c1%rowtype;
+	row2 c2%rowtype;
+begin
+	open c1;
+	loop
+	fetch c1 into row1;
+	exit when c1%notfound;
+	dbms_output.put_line(row1.empno||' '||row1.ename||' '||row1.deptno||' '||row1.sal||' '||nvl(row1.comm,0)||' '||row1.mgr);
+	end loop;
+	close c1;
+	open c2;
+	loop
+	fetch c2 into row2;
+	exit when c2%notfound;
+	dbms_output.put_line(row2.empno||' '||row2.ename||' '||row2.deptno||' '||row2.sal||' '||nvl(row2.comm,0)||' '||row2.mgr);
+	end loop;
+	close c2;
+end;
+/
+----------------------------------------------------------------------------------------------
+						end

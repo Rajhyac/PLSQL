@@ -1,0 +1,56 @@
+Problem Statement on Procedures
+1.Write a procedure to display number of employee from dept no.30.
+
+Solution:-
+
+CREATE OR REPLACE PROCEDURE proc_emps_30
+AS
+emp_count int; 
+BEGIN 
+   select count(*) into emp_count from emp
+    where deptno=30;
+dbms_output.put_line('number of employee from dept 30 is :'||emp_count); 
+END; 
+/
+#####################################################################################
+
+2.How to use Sequence in Stored Procedure?
+
+
+Solution:-
+CREATE OR REPLACE PROCEDURE sequence_asc
+AS
+BEGIN
+   insert into emp(empno)values(srno.nextval);
+END sequence_asc;
+/
+######################################################################################
+
+3.Write a procedure to display number of employees from given department number.
+
+Solution:-
+        CREATE OR REPLACE PROCEDURE proc_empcount(vdno int)
+         is
+         empcount int;
+         BEGIN
+              select count(*) into empcount from emp
+              where deptno=vdono;
+         dbms_output.put_line('Number of employee from deptno:'||vdono|| ' is '|| empcount);
+        END proc_empcount;
+        /
+########################################################################################
+         
+4.Write procedure to find number of employees with given designation.
+
+Solution:-
+           CREATE OR REPLACE PROCEDURE proc_empcntno(vdesg emp.job%type)
+           AS
+           empcntno int;
+           BEGIN
+                select count(*) into empcntno from emp 
+             where job=vdesg;
+             dbms_output.put_line('Entered Designation is:'||vdesg);
+             dbms_output.put_line('NO. of Employees:'||empcntno);
+             END ;
+             /           
+############################################################################################

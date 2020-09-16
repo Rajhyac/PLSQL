@@ -1,0 +1,35 @@
+Problem Statement on Triggers:-
+###############################
+
+1.Using Trigger show user name when he enters any data into existing table.
+  
+  Solution:-
+             CREATE OR REPLACE TRIGGER trig_authenticateduser
+             BEFORE INSERT ON EMP
+             FOR EACH ROW
+             ENABLE
+             DECLARE 
+             v_USER VARCHAR2(10);
+             BEGIN
+                select user into v_USER from dual;
+               dbms_output.put_line('Authenticated User who entered data:-' || v_USER);
+             END;
+             /
+
+ ###################################################################################################################
+
+2.Using Trigger show user name when he updates any data into existing table.
+   
+   Solution:-
+             CREATE OR REPLACE TRIGGER trigupdate_authenticateduser
+             BEFORE UPDATE ON EMP
+             FOR EACH ROW
+             ENABLE
+             DECLARE
+             v_USER VARCHAR2(10);
+             BEGIN
+                  select user into v_USER from emp;
+                  dbms_output.put_line('Authenticated User who entered data:-'||v_USER);
+             END trigupdate_authenticateduser;
+             /
+

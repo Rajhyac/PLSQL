@@ -1,0 +1,47 @@
+Problems on Exception:-
+(System Defined/Predefined/Named Exception)
+
+1.Procedure to display employee name  with given designation.
+  
+  Solution:-
+           Create or Replace Procedure proc_excep(vdesg emp.job%type)
+           is
+           vename varchar2(20);
+           Begin
+                select ename into vename from emp
+                where job =vdesg;
+            dbms_output.put_line('Name:-' || vename);
+           Exception
+               when NO_DATA_FOUND then
+                  dbms_output.put_line('No Employee existed with given job');
+               when TOO_MANY_ROWS then
+                  dbms_output.put_line('Multiple employees existed ,use explicit cursor');
+           End proc_excep;
+           /
+######################################################################################################################################   
+
+
+** (User Defind/Unnamed Exception)
+    2.Procedure to display commission of employee for given employee id.
+     
+     Solution:- 
+                 Create or Replace Procedure proc_comm (veid int)
+                 is
+                 vcomm int;
+                 c_miss Exception;
+                 Begin
+                     select comm into vcomm from emp where empno=veid;
+                   if vcomm IS NOT NULL then
+                   dbms_output.put_line('Comm of' || veid || 'is' || vcomm);
+                   else
+                   RAISE c_miss;
+                   end if;
+                   Exception
+                   when NO_DATA_FOUND then
+                   dbms_output.put_line('EmpId Not Existed');
+                   when TOO_MANY_ROWS then
+                   dbms_output.put_line('Duplicate EmpId'); 
+                   when c_miss then
+                   dbms_output.put_line('Comm is Not Existed');
+                   End proc_comm;
+                   /        
